@@ -2,11 +2,17 @@ services:
   - type: web
     name: aurora
     runtime: node
-    buildCommand: npm ci --prefix backend && npm ci --prefix frontend && npm run build --prefix frontend
+    buildCommand: npm ci --include=dev --prefix backend && npm ci --include=dev --prefix frontend && npm run build --prefix frontend
     startCommand: npm start --prefix backend
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: NPM_CONFIG_PRODUCTION
+        value: "false"
+      - key: YARN_PRODUCTION
+        value: "false"
       - key: PGSSL
         value: "true"
       - key: STORAGE_PROVIDER
