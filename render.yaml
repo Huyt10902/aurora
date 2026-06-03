@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: aurora
+    runtime: node
+    buildCommand: npm ci --prefix backend && npm ci --prefix frontend && npm run build --prefix frontend
+    startCommand: npm start --prefix backend
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PGSSL
+        value: "true"
+      - key: STORAGE_PROVIDER
+        value: supabase
+      - key: STORAGE_BUCKET
+        value: aurora
+      - key: STORAGE_ENSURE_BUCKET
+        value: "false"
+      - key: STORAGE_PUBLIC_READ
+        value: "false"
+      - key: UPLOAD_MAX_FILE_MB
+        value: "50"
+      - key: DATABASE_URL
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: STORAGE_ENDPOINT
+        sync: false
+      - key: STORAGE_PUBLIC_URL
+        sync: false
+      - key: STORAGE_ACCESS_KEY
+        sync: false
+      - key: STORAGE_SECRET_KEY
+        sync: false
+      - key: STORAGE_REGION
+        sync: false
