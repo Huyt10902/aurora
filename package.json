@@ -14,7 +14,7 @@
     "storage:up": "docker compose up -d minio",
     "storage:down": "docker compose down",
     "lint:frontend": "npm run lint --prefix frontend",
-    "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
+    "build": "NPM_CONFIG_PRODUCTION=false npm ci --prefix backend && NPM_CONFIG_PRODUCTION=false npm ci --prefix frontend && npm run build --prefix frontend",
     "start": "npm start --prefix backend"
   }
 }
