@@ -26,7 +26,7 @@ Use this repository as a Render Web Service. You can either use `render.yaml` or
 Build command:
 
 ```bash
-npm ci --prefix backend && npm ci --prefix frontend && npm run build --prefix frontend
+npm ci --include=dev --prefix backend && npm ci --include=dev --prefix frontend && npm run build --prefix frontend
 ```
 
 Start command:
@@ -40,7 +40,10 @@ npm start --prefix backend
 Set these in Render:
 
 ```env
+NODE_VERSION=22
 NODE_ENV=production
+NPM_CONFIG_PRODUCTION=false
+YARN_PRODUCTION=false
 PGSSL=true
 DATABASE_URL=postgresql://...
 CLIENT_URL=https://YOUR_RENDER_SERVICE.onrender.com

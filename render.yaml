@@ -2,7 +2,7 @@ services:
   - type: web
     name: aurora
     runtime: node
-    buildCommand: npm ci --include=dev --prefix backend && npm ci --include=dev --prefix frontend && npm run build --prefix frontend
+    buildCommand: npm install --prefix backend --production=false && npm install --prefix frontend --production=false && npm run build --prefix frontend
     startCommand: npm start --prefix backend
     envVars:
       - key: NODE_ENV
