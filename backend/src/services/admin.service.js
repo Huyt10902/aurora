@@ -417,3 +417,38 @@ export class AdminService {
     }
   }
 }
+
+  async getSettings() {
+    const { SettingsRepository } = await import("../repositories/settings.repository.js");
+    const settingsRepository = new SettingsRepository();
+    const rows = await settingsRepository.findAll();
+    
+    // Convert to key-value object
+    const settings = {};
+    for (const row of rows) {
+      settings[row.key] = row.value === 'true';
+    }
+    
+    return settings;
+  }
+
+  async updateSettings({ settings, userId }) {
+    const { SettingsRepository } = await import("../repositories/settings.repository.js");
+    const settingsRepository = new SettingsRepository();
+    
+    const updates = [];
+    for (const [key, value] of Object.entries(settings)) {
+      updates.push(
+        settingsRepository.upsert({
+          key,
+          value: String(value),
+          userId,
+        })
+      );
+    }
+    
+    await Promise.all(updates);
+    
+    return this.getSettings();
+  }
+}

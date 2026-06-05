@@ -1,12 +1,13 @@
 import { useAuthStore } from "@/stores/useAuthStore";
 import Header from "./components/Header";
 import DashboardStats from "./components/DashboardStats";
-import { Album, FolderTree, Music, Tags } from "lucide-react";
+import { Album, FolderTree, Music, Settings, Tags } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SongsTabContent from "./components/SongsTabContent";
 import AlbumsTabContent from "./components/AlbumsTabContent";
 import CategoriesTabContent from "./components/CategoriesTabContent";
 import GenresTabContent from "./components/GenresTabContent";
+import SettingsTabContent from "./components/SettingsTabContent";
 import { useEffect } from "react";
 import { useMusicStore } from "@/stores/useMusicStore";
 
@@ -53,6 +54,10 @@ const AdminPage = () => {
 						<FolderTree className='mr-2 size-4' />
 						Categories
 					</TabsTrigger>
+					<TabsTrigger value='settings' className='data-[state=active]:bg-zinc-700'>
+						<Settings className='mr-2 size-4' />
+						Settings
+					</TabsTrigger>
 				</TabsList>
 
 				<TabsContent value='songs'>
@@ -66,6 +71,9 @@ const AdminPage = () => {
 				</TabsContent>
 				<TabsContent value='categories'>
 					<CategoriesTabContent />
+				</TabsContent>
+				<TabsContent value='settings'>
+					<SettingsTabContent />
 				</TabsContent>
 			</Tabs>
 		</div>

@@ -12,7 +12,9 @@ import {
 	deleteSong,
 	getCategories,
 	getGenres,
+	getSettings,
 	updateAlbum,
+	updateSettings,
 	updateSong,
 } from "../controller/admin.controller.js";
 import { protectRoute, requireAdmin } from "../middleware/auth.middleware.js";
@@ -39,5 +41,8 @@ router.delete("/genres/:id", deleteGenre);
 router.get("/categories", getCategories);
 router.post("/categories", createCategory);
 router.delete("/categories/:id", deleteCategory);
+
+router.get("/settings", getSettings);
+router.put("/settings", updateSettings);
 
 export default router;
