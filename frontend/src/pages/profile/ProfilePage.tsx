@@ -3,13 +3,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Switch } from "@/components/ui/switch";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { Camera, KeyRound, Save, UserRound } from "lucide-react";
+import { useSettingsStore } from "@/stores/useSettingsStore";
+import { Camera, KeyRound, Save, UserRound, Laugh } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
 const ProfilePage = () => {
 	const { user, isLoading, updatePassword, updateProfile } = useAuthStore();
+	const { rickRollMode, toggleRickRollMode } = useSettingsStore();
 	const [fullName, setFullName] = useState(user?.fullName || "");
 	const [avatarFile, setAvatarFile] = useState<File | null>(null);
 	const [currentPassword, setCurrentPassword] = useState("");
@@ -178,6 +181,41 @@ const ProfilePage = () => {
 							Update Password
 						</Button>
 					</form>
+
+					{/* Rick Roll Mode Settings */}
+					<div className='rounded-md border border-zinc-800 bg-zinc-900/60 p-5 space-y-5'>
+						<div className='flex items-center gap-3'>
+							<Laugh className='size-5 text-pink-400' />
+							<h2 className='text-lg font-semibold'>Fun Settings</h2>
+						</div>
+						
+						<div className='flex items-center justify-between p-4 bg-zinc-800/40 rounded-lg'>
+							<div className='space-y-1'>
+								<div className='font-medium flex items-center gap-2'>
+									Rick Roll Mode 🎵
+									<span className='text-xs bg-pink-500/20 text-pink-400 px-2 py-0.5 rounded-full'>
+										Easter Egg
+									</span>
+								</div>
+								<p className='text-sm text-zinc-400'>
+									Surprise non-subscribers with a classic internet moment 😄
+								</p>
+							</div>
+							<Switch
+								checked={rickRollMode}
+								onCheckedChange={toggleRickRollMode}
+								className='data-[state=checked]:bg-pink-500'
+							/>
+						</div>
+
+						{rickRollMode && (
+							<div className='bg-gradient-to-r from-pink-600/10 to-purple-600/10 border border-pink-500/20 rounded-lg p-4'>
+								<p className='text-sm text-center text-zinc-300'>
+									🎉 <strong>Rick Roll Mode Active!</strong> Non-subscribers will get a special surprise when they try to play music 🎵
+								</p>
+							</div>
+						)}
+					</div>
 				</div>
 			</ScrollArea>
 		</main>
