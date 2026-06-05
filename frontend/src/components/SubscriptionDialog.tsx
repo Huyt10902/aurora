@@ -60,17 +60,37 @@ export const SubscriptionDialog = ({ open, onOpenChange }: SubscriptionDialogPro
 						</DialogDescription>
 					</DialogHeader>
 					<div className="space-y-4">
-						{/* Rick Roll Video */}
+						{/* Rick Roll Video - Local MP4 or YouTube fallback */}
 						<div className="relative w-full aspect-video rounded-lg overflow-hidden bg-black">
-							<iframe
-								width="100%"
-								height="100%"
-								src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&controls=0&showinfo=0&rel=0"
-								title="Never Gonna Give You Up"
-								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-								allowFullScreen
-								className="absolute inset-0"
-							/>
+							<video
+								autoPlay
+								loop
+								muted
+								playsInline
+								className="absolute inset-0 w-full h-full object-cover"
+								onError={(e) => {
+									// Fallback to YouTube if local video fails
+									const video = e.currentTarget;
+									const container = video.parentElement;
+									if (container) {
+										container.innerHTML = `
+											<iframe
+												width="100%"
+												height="100%"
+												src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&controls=0&showinfo=0&rel=0&loop=1"
+												title="Never Gonna Give You Up"
+												allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+												allowFullScreen
+												class="absolute inset-0"
+											></iframe>
+										`;
+									}
+								}}
+							>
+								<source src="/videos/Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster) - Rick Astley (144p, h264).mp4" type="video/mp4" />
+								{/* Fallback nếu video không load */}
+								Your browser does not support the video tag.
+							</video>
 						</div>
 						<div className="bg-gradient-to-r from-green-600/20 to-green-500/20 rounded-lg p-4 border border-green-500/30">
 							<p className="text-sm text-center text-zinc-300">
