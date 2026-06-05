@@ -14,14 +14,14 @@ import { optionalAuth, protectRoute, requireSubscription } from "../middleware/a
 
 const router = Router();
 
-// Tất cả các route lấy danh sách bài hát đều yêu cầu subscription
-router.get("/", protectRoute, requireSubscription, getAllSongs);
-router.get("/featured", protectRoute, requireSubscription, getFeaturedSongs);
-router.get("/made-for-you", protectRoute, requireSubscription, getMadeForYouSongs);
-router.get("/trending", protectRoute, requireSubscription, getTrendingSongs);
-router.get("/:songId", protectRoute, requireSubscription, getSongById);
+// Cho phép xem danh sách nhạc mà không cần subscription
+router.get("/", optionalAuth, getAllSongs);
+router.get("/featured", getFeaturedSongs);
+router.get("/made-for-you", getMadeForYouSongs);
+router.get("/trending", getTrendingSongs);
+router.get("/:songId", optionalAuth, getSongById);
 
-// Rating và comments cũng yêu cầu subscription
+// Rating và comments yêu cầu đăng nhập và subscription
 router.put("/:songId/rating", protectRoute, requireSubscription, rateSong);
 router.delete("/:songId/rating", protectRoute, requireSubscription, clearSongRating);
 router.post("/:songId/comments", protectRoute, requireSubscription, createSongComment);

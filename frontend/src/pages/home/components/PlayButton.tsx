@@ -1,29 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { usePlayerStore } from "@/stores/usePlayerStore";
 import { useSubscriptionStore } from "@/stores/useSubscriptionStore";
+import { useAuthStore } from "@/stores/useAuthStore";
 import { Song } from "@/types";
 import { Pause, Play } from "lucide-react";
-import { type MouseEvent } from "react";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { type MouseEvent, useState } from "react";
+import { SubscriptionDialog } from "@/components/SubscriptionDialog";
 
 const PlayButton = ({ song }: { song: Song }) => {
 	const { currentSong, isPlaying, setCurrentSong, togglePlay } = usePlayerStore();
 	const { isPremium } = useSubscriptionStore();
-	const navigate = useNavigate();
+	const { user } = useAuthStore();
+	const [showDialog, setShowDialog] = useState(false);
 	const isCurrentSong = currentSong?._id === song._id;
 
 	const handlePlay = (event: MouseEvent) => {
 		event.preventDefault();
 		event.stopPropagation();
 		
-		if (!isPremium) {
-			toast.error("You need an active subscription to play music", {
-				duration: 5000,
-			});
-			setTimeout(() => {
-				navigate("/subscription");
-			}, 1500);
+		if (!user || !isPremium) {
+			setShowDialog(true);
 			return;
 		}
 		
@@ -32,20 +28,23 @@ const PlayButton = ({ song }: { song: Song }) => {
 	};
 
 	return (
-		<Button
-			size={"icon"}
-			onClick={handlePlay}
-			className={`absolute bottom-3 right-2 bg-green-500 hover:bg-green-400 hover:scale-105 transition-all 
-				opacity-0 translate-y-2 group-hover:translate-y-0 ${
-					isCurrentSong ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-				}`}
-		>
-			{isCurrentSong && isPlaying ? (
-				<Pause className='size-5 text-black' />
-			) : (
-				<Play className='size-5 text-black' />
-			)}
-		</Button>
+		<>
+			<Button
+				size={"icon"}
+				onClick={handlePlay}
+				className={`absolute bottom-3 right-2 bg-green-500 hover:bg-green-400 hover:scale-105 transition-all 
+					opacity-0 translate-y-2 group-hover:translate-y-0 ${
+						isCurrentSong ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+					}`}
+			>
+				{isCurrentSong && isPlaying ? (
+					<Pause className='size-5 text-black' />
+				) : (
+					<Play className='size-5 text-black' />
+				)}
+			</Button>
+			<SubscriptionDialog open={showDialog} onOpenChange={setShowDialog} />
+		</>
 	);
 };
 export default PlayButton;

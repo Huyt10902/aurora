@@ -5,17 +5,19 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMusicStore } from "@/stores/useMusicStore";
 import { usePlayerStore } from "@/stores/usePlayerStore";
 import { useSubscriptionStore } from "@/stores/useSubscriptionStore";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { SubscriptionDialog } from "@/components/SubscriptionDialog";
 import { Clock, Music2, Pause, Play, PlayCircle } from "lucide-react";
-import { useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 const AlbumPage = () => {
 	const { albumId } = useParams();
 	const { fetchAlbumById, currentAlbum, isLoading } = useMusicStore();
 	const { currentSong, isPlaying, playAlbum, togglePlay } = usePlayerStore();
 	const { isPremium } = useSubscriptionStore();
-	const navigate = useNavigate();
+	const { user } = useAuthStore();
+	const [showDialog, setShowDialog] = useState(false);
 
 	useEffect(() => {
 		if (albumId) fetchAlbumById(albumId);
@@ -24,13 +26,8 @@ const AlbumPage = () => {
 	if (isLoading) return null;
 
 	const handlePlayAlbum = () => {
-		if (!isPremium) {
-			toast.error("You need an active subscription to play music", {
-				duration: 5000,
-			});
-			setTimeout(() => {
-				navigate("/subscription");
-			}, 1500);
+		if (!user || !isPremium) {
+			setShowDialog(true);
 			return;
 		}
 		
@@ -45,13 +42,8 @@ const AlbumPage = () => {
 	};
 
 	const handlePlaySong = (index: number) => {
-		if (!isPremium) {
-			toast.error("You need an active subscription to play music", {
-				duration: 5000,
-			});
-			setTimeout(() => {
-				navigate("/subscription");
-			}, 1500);
+		if (!user || !isPremium) {
+			setShowDialog(true);
 			return;
 		}
 		
@@ -176,6 +168,7 @@ const AlbumPage = () => {
 					</div>
 				</div>
 			</ScrollArea>
+			<SubscriptionDialog open={showDialog} onOpenChange={setShowDialog} />
 		</div>
 	);
 };

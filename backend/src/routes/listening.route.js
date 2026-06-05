@@ -8,8 +8,10 @@ import { protectRoute, requireSubscription } from "../middleware/auth.middleware
 
 const router = Router();
 
-// Record play yêu cầu subscription
+// Record play YÊU CẦU subscription - đây là action chính
 router.post("/plays/:songId", protectRoute, requireSubscription, recordPlay);
+
+// Recent và recommendations yêu cầu đăng nhập và subscription
 router.use(protectRoute);
 router.use(requireSubscription);
 router.get("/recent", getRecentlyPlayed);
