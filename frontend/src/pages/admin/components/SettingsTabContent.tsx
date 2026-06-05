@@ -1,28 +1,19 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { useSettingsStore } from "@/stores/useSettingsStore";
-import { Laugh, Loader2 } from "lucide-react";
-import { useEffect } from "react";
+import { Laugh } from "lucide-react";
 import toast from "react-hot-toast";
 
 const SettingsTabContent = () => {
-	const { rickRollMode, isLoading, fetchSettings, updateRickRollMode } = useSettingsStore();
+	const { rickRollMode, toggleRickRollMode } = useSettingsStore();
 
-	useEffect(() => {
-		fetchSettings();
-	}, [fetchSettings]);
-
-	const handleToggle = async (checked: boolean) => {
-		try {
-			await updateRickRollMode(checked);
-			toast.success(
-				checked
-					? "Rick Roll Mode activated! 🎵 Non-subscribers will get a surprise!"
-					: "Rick Roll Mode deactivated"
-			);
-		} catch (error) {
-			toast.error("Failed to update setting");
-		}
+	const handleToggle = () => {
+		toggleRickRollMode();
+		toast.success(
+			!rickRollMode
+				? "Rick Roll Mode activated! 🎵 Non-subscribers will get a surprise!"
+				: "Rick Roll Mode deactivated"
+		);
 	};
 
 	return (
@@ -50,15 +41,11 @@ const SettingsTabContent = () => {
 							</p>
 						</div>
 						<div className="ml-4">
-							{isLoading ? (
-								<Loader2 className="size-5 animate-spin text-zinc-400" />
-							) : (
-								<Switch
-									checked={rickRollMode}
-									onCheckedChange={handleToggle}
-									className="data-[state=checked]:bg-pink-500"
-								/>
-							)}
+							<Switch
+								checked={rickRollMode}
+								onCheckedChange={handleToggle}
+								className="data-[state=checked]:bg-pink-500"
+							/>
 						</div>
 					</div>
 

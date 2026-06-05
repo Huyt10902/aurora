@@ -160,24 +160,3 @@ export const classifySongAll = async (req, res, next) => {
 		next(error);
 	}
 };
-
-export const getSettings = async (req, res, next) => {
-	try {
-		const settings = await services.adminService.getSettings();
-		res.json(settings);
-	} catch (error) {
-		next(error);
-	}
-};
-
-export const updateSettings = async (req, res, next) => {
-	try {
-		const settings = await services.adminService.updateSettings({
-			settings: req.body,
-			userId: req.user._id,
-		});
-		res.json(settings);
-	} catch (error) {
-		next(error);
-	}
-};

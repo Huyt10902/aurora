@@ -20,15 +20,8 @@ interface SubscriptionDialogProps {
 export const SubscriptionDialog = ({ open, onOpenChange }: SubscriptionDialogProps) => {
 	const navigate = useNavigate();
 	const { user } = useAuthStore();
-	const { rickRollMode, fetchSettings } = useSettingsStore();
+	const { rickRollMode } = useSettingsStore();
 	const [showRickRoll, setShowRickRoll] = useState(false);
-
-	// Fetch settings when dialog opens
-	useEffect(() => {
-		if (open) {
-			fetchSettings();
-		}
-	}, [open, fetchSettings]);
 
 	useEffect(() => {
 		if (open && rickRollMode) {
