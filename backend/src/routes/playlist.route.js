@@ -9,11 +9,12 @@ import {
 	reorderPlaylistSongs,
 	updatePlaylist,
 } from "../controller/playlist.controller.js";
-import { protectRoute } from "../middleware/auth.middleware.js";
+import { protectRoute, requireSubscription } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
 router.use(protectRoute);
+router.use(requireSubscription);
 
 router.get("/", getPlaylists);
 router.post("/", createPlaylist);

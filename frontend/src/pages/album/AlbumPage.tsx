@@ -4,14 +4,18 @@ import { formatDuration, formatPlayCount } from "@/lib/format";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMusicStore } from "@/stores/useMusicStore";
 import { usePlayerStore } from "@/stores/usePlayerStore";
-import { Clock, Music2, Pause, Play, PlayCircle } from "lucide-react";
+import { useSubscriptionStore } from "@/stores/useSubscriptionStore";
+import { Clock, Crown, Music2, Pause, Play, PlayCircle } from "lucide-react";
 import { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AlbumPage = () => {
 	const { albumId } = useParams();
 	const { fetchAlbumById, currentAlbum, isLoading } = useMusicStore();
 	const { currentSong, isPlaying, playAlbum, togglePlay } = usePlayerStore();
+	const { isPremium } = useSubscriptionStore();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (albumId) fetchAlbumById(albumId);
@@ -20,6 +24,16 @@ const AlbumPage = () => {
 	if (isLoading) return null;
 
 	const handlePlayAlbum = () => {
+		if (!isPremium) {
+			toast.error("You need an active subscription to play music", {
+				duration: 5000,
+			});
+			setTimeout(() => {
+				navigate("/subscription");
+			}, 1500);
+			return;
+		}
+		
 		if (!currentAlbum) return;
 
 		const isCurrentAlbumPlaying = currentAlbum?.songs.some((song) => song._id === currentSong?._id);
@@ -31,6 +45,16 @@ const AlbumPage = () => {
 	};
 
 	const handlePlaySong = (index: number) => {
+		if (!isPremium) {
+			toast.error("You need an active subscription to play music", {
+				duration: 5000,
+			});
+			setTimeout(() => {
+				navigate("/subscription");
+			}, 1500);
+			return;
+		}
+		
 		if (!currentAlbum) return;
 
 		playAlbum(currentAlbum?.songs, index);

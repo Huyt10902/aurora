@@ -4,12 +4,14 @@ import {
 	getRecentlyPlayed,
 	recordPlay,
 } from "../controller/listening.controller.js";
-import { optionalAuth, protectRoute } from "../middleware/auth.middleware.js";
+import { protectRoute, requireSubscription } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
-router.post("/plays/:songId", optionalAuth, recordPlay);
+// Record play yêu cầu subscription
+router.post("/plays/:songId", protectRoute, requireSubscription, recordPlay);
 router.use(protectRoute);
+router.use(requireSubscription);
 router.get("/recent", getRecentlyPlayed);
 router.get("/recommendations", getRecommendations);
 

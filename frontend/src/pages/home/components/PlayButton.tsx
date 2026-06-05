@@ -1,16 +1,32 @@
 import { Button } from "@/components/ui/button";
 import { usePlayerStore } from "@/stores/usePlayerStore";
+import { useSubscriptionStore } from "@/stores/useSubscriptionStore";
 import { Song } from "@/types";
 import { Pause, Play } from "lucide-react";
 import { type MouseEvent } from "react";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const PlayButton = ({ song }: { song: Song }) => {
 	const { currentSong, isPlaying, setCurrentSong, togglePlay } = usePlayerStore();
+	const { isPremium } = useSubscriptionStore();
+	const navigate = useNavigate();
 	const isCurrentSong = currentSong?._id === song._id;
 
 	const handlePlay = (event: MouseEvent) => {
 		event.preventDefault();
 		event.stopPropagation();
+		
+		if (!isPremium) {
+			toast.error("You need an active subscription to play music", {
+				duration: 5000,
+			});
+			setTimeout(() => {
+				navigate("/subscription");
+			}, 1500);
+			return;
+		}
+		
 		if (isCurrentSong) togglePlay();
 		else setCurrentSong(song);
 	};

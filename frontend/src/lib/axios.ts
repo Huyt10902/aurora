@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { User } from "@/types";
+import toast from "react-hot-toast";
 
 let refreshRequest: Promise<{ user: User; accessToken: string }> | null = null;
 
@@ -27,6 +28,18 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     const isAuthRoute = originalRequest?.url?.startsWith("/auth/");
+
+    // Xử lý lỗi subscription trước
+    if (error.response?.status === 403 && error.response?.data?.requiresSubscription) {
+      toast.error(error.response.data.message, { duration: 5000 });
+      
+      // Redirect về trang subscription sau 1 giây
+      setTimeout(() => {
+        window.location.href = "/subscription";
+      }, 1500);
+      
+      return Promise.reject(error);
+    }
 
     if (
       error.response?.status === 401 &&

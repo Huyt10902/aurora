@@ -7,10 +7,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import SectionGrid from "./components/SectionGrid";
 import { usePlayerStore } from "@/stores/usePlayerStore";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useSubscriptionStore } from "@/stores/useSubscriptionStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Crown } from "lucide-react";
 
 const HomePage = () => {
 	const {
@@ -43,6 +45,8 @@ const HomePage = () => {
 	const [genreId, setGenreId] = useState("all");
 	const [categoryId, setCategoryId] = useState("all");
 	const { user } = useAuthStore();
+	const { isPremium } = useSubscriptionStore();
+	const navigate = useNavigate();
 
 	const hasSearchResults = useMemo(
 		() => searchQuery.trim().length > 0 || genreId !== "all" || categoryId !== "all",
@@ -111,6 +115,25 @@ const HomePage = () => {
 			<Topbar />
 			<ScrollArea className='h-[calc(100vh-180px)]'>
 				<div className='p-4 sm:p-6'>
+					{user && !isPremium && (
+						<div className='mb-6 bg-gradient-to-r from-green-600 to-green-500 p-4 rounded-lg shadow-lg'>
+							<div className='flex items-center justify-between'>
+								<div className='flex items-center gap-3'>
+									<Crown className='w-8 h-8 text-yellow-300' />
+									<div>
+										<h3 className='font-bold text-lg'>Upgrade to Premium to Play Music</h3>
+										<p className='text-sm text-white/90'>Subscribe now to unlock unlimited music streaming</p>
+									</div>
+								</div>
+								<Button
+									onClick={() => navigate("/subscription")}
+									className='bg-yellow-400 hover:bg-yellow-500 text-black font-bold'
+								>
+									Subscribe Now
+								</Button>
+							</div>
+						</div>
+					)}
 					<h1 className='text-2xl sm:text-3xl font-bold mb-6'>Good afternoon</h1>
 					<div className='flex flex-col gap-3 sm:flex-row sm:items-center mb-6'>
 						<div className='flex-1'>

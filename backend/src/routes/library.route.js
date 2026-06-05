@@ -5,11 +5,12 @@ import {
 	likeSong,
 	unlikeSong,
 } from "../controller/library.controller.js";
-import { protectRoute } from "../middleware/auth.middleware.js";
+import { protectRoute, requireSubscription } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
 router.use(protectRoute);
+router.use(requireSubscription);
 
 router.get("/liked", getLikedSongs);
 router.get("/liked/ids", getLikedSongIds);

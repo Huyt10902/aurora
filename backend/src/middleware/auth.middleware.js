@@ -57,3 +57,44 @@ export const requireAdmin = async (req, res, next) => {
 
 	next();
 };
+
+export const requireSubscription = async (req, res, next) => {
+	try {
+		if (!req.user) {
+			return res.status(401).json({ message: "You must be logged in to play music" });
+		}
+
+		// Import SubscriptionRepository để kiểm tra subscription
+		const { SubscriptionRepository } = await import("../repositories/subscription.repository.js");
+		const subscriptionRepository = new SubscriptionRepository();
+
+		// Kiểm tra subscription hiện tại
+		await subscriptionRepository.expireElapsedSubscriptions(req.user._id);
+		const current = await subscriptionRepository.findCurrentSubscription(req.user._id);
+
+		// Nếu không có subscription hoặc đang dùng free plan
+		if (!current || current.plan_code === "free") {
+			return res.status(403).json({ 
+				message: "You need an active subscription to play music",
+				requiresSubscription: true
+			});
+		}
+
+		// Kiểm tra subscription có đang active không
+		const PREMIUM_STATUSES = new Set(["trialing", "active"]);
+		const isPremium = PREMIUM_STATUSES.has(current.subscription_status) &&
+			(!current.current_period_end || new Date(current.current_period_end) > new Date());
+
+		if (!isPremium) {
+			return res.status(403).json({ 
+				message: "Your subscription has expired. Please renew to continue playing music",
+				requiresSubscription: true
+			});
+		}
+
+		next();
+	} catch (error) {
+		console.error("Subscription check error:", error);
+		return res.status(500).json({ message: "Error checking subscription status" });
+	}
+};

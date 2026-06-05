@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { Song } from "@/types";
 import { useChatStore } from "./useChatStore";
 import { useMusicStore } from "./useMusicStore";
+import { useSubscriptionStore } from "./useSubscriptionStore";
+import toast from "react-hot-toast";
 
 interface PlayerStore {
 	currentSong: Song | null;
@@ -60,6 +62,11 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 	setCurrentSong: (song: Song | null) => {
 		if (!song) return;
 
+		const { isPremium } = useSubscriptionStore.getState();
+		if (!isPremium) {
+			return;
+		}
+
 		emitActivity(`Playing ${song.title} by ${song.artist}`);
 		recordSongPlay(song);
 
@@ -72,6 +79,12 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 	},
 
 	togglePlay: () => {
+		const { isPremium } = useSubscriptionStore.getState();
+		if (!isPremium) {
+			toast.error("You need an active subscription to play music");
+			return;
+		}
+
 		const willStartPlaying = !get().isPlaying;
 
 		const currentSong = get().currentSong;
@@ -83,6 +96,12 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 	},
 
 	playNext: () => {
+		const { isPremium } = useSubscriptionStore.getState();
+		if (!isPremium) {
+			toast.error("You need an active subscription to play music");
+			return;
+		}
+
 		const { currentIndex, queue } = get();
 		const nextIndex = currentIndex + 1;
 
@@ -106,6 +125,12 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 		}
 	},
 	playPrevious: () => {
+		const { isPremium } = useSubscriptionStore.getState();
+		if (!isPremium) {
+			toast.error("You need an active subscription to play music");
+			return;
+		}
+
 		const { currentIndex, queue } = get();
 		const prevIndex = currentIndex - 1;
 
