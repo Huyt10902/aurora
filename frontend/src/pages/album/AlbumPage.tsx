@@ -5,7 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMusicStore } from "@/stores/useMusicStore";
 import { usePlayerStore } from "@/stores/usePlayerStore";
 import { useSubscriptionStore } from "@/stores/useSubscriptionStore";
-import { Clock, Crown, Music2, Pause, Play, PlayCircle } from "lucide-react";
+import { Clock, Music2, Pause, Play, PlayCircle } from "lucide-react";
 import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
